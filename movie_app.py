@@ -5,22 +5,21 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 movie_app = Flask(__name__)
 
-# Load movie data
 movies = pd.read_pickle("movies.pkl")
-similarity_data = pd.read_pickle("similarity.pkl")  # contains 'tags'
+similarity_data = pd.read_pickle("similarity.pkl")  
 
-# Vectorization
+
 cv = CountVectorizer(max_features=5000, stop_words="english")
 vectors = cv.fit_transform(similarity_data["tags"])
 similarity = cosine_similarity(vectors)
 
-# Show movie selection form
+
 @movie_app.route("/", methods=["GET"])
 def form_show():
     return render_template("movie.html", movies=movies["title"].tolist(), rec=[])
 
-# Show recommendations
-@movie_app.route("/movie_show", methods=["POST"])  # FIXED: route
+
+@movie_app.route("/movie_show", methods=["POST"])  
 def show():
     movie = request.form.get("movies")
     try:
@@ -33,7 +32,6 @@ def show():
     except Exception as e:
         return f"Error occurred: {e}"
 
-# Run the app
 if __name__ == "__main__":
     movie_app.run(debug=True)
 
@@ -42,4 +40,3 @@ if __name__ == "__main__":
 
 
 
-movie_app.run(debug=True)
